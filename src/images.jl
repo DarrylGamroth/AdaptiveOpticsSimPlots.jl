@@ -26,17 +26,23 @@ function plot_science_frame(x; stretch::Symbol=:log10, kwargs...)
     return plot_science_frame(frame; stretch=stretch, kwargs...)
 end
 
+plot_detector_frame(frame::AbstractMatrix; title::AbstractString="Detector Frame", kwargs...) =
+    _heatmap2d(_plot_matrix_data(frame); title=title, kwargs...)
+
 plot_detector_frame(det::AdaptiveOpticsSim.AbstractDetector; title::AbstractString="Detector Frame", kwargs...) =
-    _heatmap2d(_plot_matrix_data(AdaptiveOpticsSim.output_frame(det)); title=title, kwargs...)
+    plot_detector_frame(AdaptiveOpticsSim.output_frame(det); title=title, kwargs...)
+
+plot_wfs_frame(frame::AbstractMatrix; title::AbstractString="WFS Frame", kwargs...) =
+    _heatmap2d(_plot_matrix_data(frame); title=title, kwargs...)
 
 function plot_wfs_frame(wfs::AdaptiveOpticsSim.AbstractWFS; title::AbstractString="WFS Frame", kwargs...)
     frame = AdaptiveOpticsSim.camera_frame(wfs)
     isnothing(frame) && throw(ArgumentError("WFS of type $(typeof(wfs)) does not expose a camera frame"))
-    return _heatmap2d(_plot_matrix_data(frame); title=title, kwargs...)
+    return plot_wfs_frame(frame; title=title, kwargs...)
 end
 
 function plot_wfs_frame(x; title::AbstractString="WFS Frame", kwargs...)
     frame = AdaptiveOpticsSim.wfs_frame(x)
     isnothing(frame) && throw(ArgumentError("object of type $(typeof(x)) does not expose a WFS frame"))
-    return _heatmap2d(_plot_matrix_data(frame); title=title, kwargs...)
+    return plot_wfs_frame(frame; title=title, kwargs...)
 end

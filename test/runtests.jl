@@ -5,6 +5,14 @@ using AdaptiveOpticsSim
 using AdaptiveOpticsSimPlots
 using Plots
 
+include(joinpath(@__DIR__, "..", "scripts", "generate_notebooks.jl"))
+
+function include_script_in_fresh_module(path::AbstractString)
+    mod = Core.eval(Main, :(module $(gensym(:AdaptiveOpticsSimPlotsExample)) end))
+    Base.include(mod, path)
+    return mod
+end
+
 @testset "AdaptiveOpticsSimPlots" begin
     tel = Telescope(resolution=16, diameter=8.0, sampling_time=1e-3, central_obstruction=0.0)
     tel.state.opd .= reshape(range(-1.0, 1.0; length=16 * 16), 16, 16)
@@ -84,4 +92,32 @@ using Plots
     @test_throws ArgumentError plot_wfs_frame(ShackHartmann(tel; n_subap=4))
     @test_throws ArgumentError aoplot(tel; surface=:bad)
     @test_throws ArgumentError aoplot(dm; kind=:bad)
+end
+
+@testset "Visual example scripts" begin
+    example_dir = joinpath(@__DIR__, "..", "examples")
+    for script in (
+        "image_formation_visual.jl",
+        "detector_visual.jl",
+        "dm_visual.jl",
+        "wfs_visual.jl",
+        "closed_loop_runtime_visual.jl",
+        "tutorial_image_formation_visual.jl",
+        "tutorial_detector_visual.jl",
+        "tutorial_closed_loop_shack_hartmann_visual.jl",
+        "tutorial_closed_loop_pyramid_visual.jl",
+        "tutorial_closed_loop_bioedge_visual.jl",
+        "tutorial_asterism_visual.jl",
+        "tutorial_spatial_filter_visual.jl",
+    )
+        include_script_in_fresh_module(joinpath(example_dir, script))
+    end
+    @test true
+end
+
+@testset "Notebook generation" begin
+    outdir = mktempdir()
+    generated = generate_notebooks(; output_dir=outdir)
+    @test length(generated) == 12
+    @test all(isfile, generated)
 end
