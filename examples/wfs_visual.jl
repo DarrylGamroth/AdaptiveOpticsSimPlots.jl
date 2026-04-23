@@ -1,1 +1,19 @@
-include(joinpath(@__DIR__, "literate", "wfs_visual.jl"))
+include(joinpath(@__DIR__, "common.jl"))
+
+tel = base_telescope(resolution=24, central_obstruction=0.0)
+src = Source(band=:I, magnitude=0.0)
+tel.state.opd .= reshape(range(-1.0e-7, 1.0e-7; length=24 * 24), 24, 24)
+
+pyr = PyramidWFS(tel; n_subap=4, mode=Diffractive(), modulation=1.0)
+measure!(pyr, tel, src)
+
+sh = ShackHartmann(tel; n_subap=4)
+measure!(sh, tel)
+
+display(Plots.plot(
+    plot_wfs_frame(pyr; title="Pyramid Frame"),
+    aoplot(pyr; kind=:signal, title="Pyramid Signal"),
+    aoplot(sh; kind=:signal, title="Shack-Hartmann Signal"),
+    layout=(1, 3),
+    size=(1200, 360),
+))

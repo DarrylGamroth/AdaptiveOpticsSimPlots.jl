@@ -56,18 +56,5 @@ Focused maintained examples live under `examples/`:
 - `examples/tutorial_asterism_visual.jl`
 - `examples/tutorial_spatial_filter_visual.jl`
 
-The source of truth for those examples is in `examples/literate/`. The
-top-level example scripts are thin wrappers for convenience.
-
-## Notebook Generation
-
-Jupyter notebooks are generated from the Literate source files rather than
-maintained by hand.
-
-Generate them with:
-
-```bash
-julia --project=. scripts/generate_notebooks.jl
-```
-
-Generated notebooks are written to `notebooks/`.
+These are plain Julia scripts and are directly runnable. There is no second
+source tree for notebooks or generated examples.

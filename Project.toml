@@ -5,7 +5,6 @@ authors = ["AdaptiveOpticsSimPlots.jl Contributors"]
 
 [deps]
 AdaptiveOpticsSim = "002fb5eb-ad68-44a0-adbe-b299bfc2febc"
-Literate = "98b081ad-f1c9-55d3-8b20-4c87d4299306"
 Logging = "56ddb016-857b-54e1-b83d-db4d58db5568"
 Plots = "91a5bcdd-55d7-5caf-9e0b-520d859cae80"
 Random = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
@@ -13,7 +12,6 @@ Statistics = "10745b16-79ce-11e8-11f9-7d13ad32a3b2"
 
 [compat]
 AdaptiveOpticsSim = "0.1"
-Literate = "2"
 Plots = "1.41"
 julia = "1.9"
 

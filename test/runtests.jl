@@ -5,8 +5,6 @@ using AdaptiveOpticsSim
 using AdaptiveOpticsSimPlots
 using Plots
 
-include(joinpath(@__DIR__, "..", "scripts", "generate_notebooks.jl"))
-
 function include_script_in_fresh_module(path::AbstractString)
     mod = Core.eval(Main, :(module $(gensym(:AdaptiveOpticsSimPlotsExample)) end))
     Base.include(mod, path)
@@ -113,11 +111,4 @@ end
         include_script_in_fresh_module(joinpath(example_dir, script))
     end
     @test true
-end
-
-@testset "Notebook generation" begin
-    outdir = mktempdir()
-    generated = generate_notebooks(; output_dir=outdir)
-    @test length(generated) == 12
-    @test all(isfile, generated)
 end

@@ -23,7 +23,3 @@ jobs:
         env:
           GKSwstype: "100"
         run: julia --startup-file=no --project=. -e 'using Pkg; Pkg.test()'
-      - name: Validate notebook generation
-        env:
-          GKSwstype: "100"
-        run: julia --startup-file=no --project=. scripts/generate_notebooks.jl
