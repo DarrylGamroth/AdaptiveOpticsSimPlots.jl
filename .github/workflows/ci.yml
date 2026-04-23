@@ -1,0 +1,25 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        julia-version: ['1.11']
+    steps:
+      - uses: actions/checkout@v4
+      - uses: julia-actions/setup-julia@v2
+        with:
+          version: ${{ matrix.julia-version }}
+      - name: Develop sibling AdaptiveOpticsSim
+        run: |
+          julia --startup-file=no -e 'using Pkg; Pkg.develop(path="../AdaptiveOpticsSim.jl"); Pkg.instantiate()'
+      - name: Run tests
+        env:
+          GKSwstype: "100"
+        run: julia --startup-file=no --project=. -e 'using Pkg; Pkg.test()'
