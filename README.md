@@ -100,7 +100,7 @@ The quick visual examples are:
 - `examples/dm_visual.jl`: grid and sampled DM command/OPD views.
 - `examples/wfs_visual.jl`: Pyramid frame plus Pyramid and Shack-Hartmann signals.
 - `examples/shack_hartmann_detector_mosaic_visual.jl`: detector-like Shack-Hartmann lenslet spot mosaic.
-- `examples/wfs_detector_comparison_visual.jl`: one wavefront viewed through Pyramid, BioEdge, Zernike, Curvature, and Shack-Hartmann detector frames with 64x64-class camera readouts.
+- `examples/wfs_detector_comparison_visual.jl`: one wavefront viewed through Pyramid, BioEdge, Zernike, Curvature, and Shack-Hartmann detector frames with 64x64 and 128x128-class camera readouts.
 - `examples/closed_loop_runtime_visual.jl`: runtime WFS frame, science frame, and signal trace.
 
 The OOPAO-style tutorial examples are:

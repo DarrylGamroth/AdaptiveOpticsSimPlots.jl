@@ -14,7 +14,7 @@ pyramid = PyramidWFS(tel; n_subap=32, mode=Diffractive(), modulation=1.0, diffra
 bioedge = BioEdgeWFS(tel; n_subap=16, mode=Diffractive(), modulation=1.0, diffraction_padding=2)
 zernike = ZernikeWFS(tel; n_subap=64, diffraction_padding=2)
 curvature = CurvatureWFS(tel; n_subap=8, diffraction_padding=2, readout_pixels_per_subap=8)
-shack_hartmann = ShackHartmann(tel; n_subap=4, mode=Diffractive(), pixel_scale=0.06, n_pix_subap=16)
+shack_hartmann = ShackHartmann(tel; n_subap=16, mode=Diffractive(), pixel_scale=0.06, n_pix_subap=8)
 
 measure!(pyramid, tel, src)
 measure!(bioedge, tel, src)
@@ -29,7 +29,7 @@ display(Plots.plot(
     aoplot(bioedge, DetectorFrame(); title="BioEdge Detector"),
     aoplot(zernike, DetectorFrame(); title="Zernike Detector"),
     aoplot(curvature, DetectorFrame(); title="Curvature Detector (2 x 64 x 64)"),
-    aoplot(shack_hartmann, DetectorFrame(); title="Shack-Hartmann Detector"),
+    aoplot(shack_hartmann, DetectorFrame(); title="Shack-Hartmann Detector (128 x 128)"),
     layout=(2, 3),
     size=(1200, 760),
 ))
