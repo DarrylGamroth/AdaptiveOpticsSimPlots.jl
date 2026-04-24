@@ -51,7 +51,10 @@ For WFS detector images, `aoplot(wfs, DetectorFrame())` renders the core
 `AdaptiveOpticsSim.wfs_detector_image` product. Pyramid, BioEdge, Zernike, and
 Curvature sensors render their maintained 2-D camera/readout frames.
 Shack-Hartmann renders the core detector mosaic assembled from its lenslet spot
-cube.
+cube. If the detector was configured with a typed digital export such as
+`Detector(bits=12, full_well=30_000.0, output_type=UInt16)`, the plot displays
+that already-quantized ADU image; plotting does not rescale or reinterpret the
+detector output contract.
 
 ## Preview
 
