@@ -43,9 +43,10 @@ aoplot(runtime, ScienceFrame())
 aoplot(runtime, Signal())
 ```
 
-The package intentionally does not extend `Plots.plot` for
-`AdaptiveOpticsSim.jl` types. `Plots.plot` and those simulation types are owned
-by different packages, so extending it here would be type piracy.
+The package intentionally uses the explicit `aoplot(obj, selector)` entrypoint
+instead of extending `Plots.plot` for `AdaptiveOpticsSim.jl` types. That keeps
+the plotting API small, makes plot intent explicit, and avoids surprising
+method dispatch for users who also use `Plots.jl` directly.
 
 For WFS detector images, `aoplot(wfs, DetectorFrame())` renders the core
 `AdaptiveOpticsSim.wfs_detector_image` product. Pyramid, BioEdge, Zernike, and
