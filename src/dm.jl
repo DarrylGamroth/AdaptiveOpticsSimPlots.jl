@@ -1,7 +1,7 @@
-plot_dm_commands(dm::AdaptiveOpticsSim.AbstractDeformableMirror; kwargs...) =
-    plot_dm_commands(AdaptiveOpticsSim.topology(dm), AdaptiveOpticsSim.command_storage(dm); kwargs...)
+_dm_commands_figure(dm::AdaptiveOpticsSim.AbstractDeformableMirror; kwargs...) =
+    _dm_commands_figure(AdaptiveOpticsSim.topology(dm), AdaptiveOpticsSim.command_storage(dm); kwargs...)
 
-function plot_dm_commands(topology::AdaptiveOpticsSim.ActuatorGridTopology, command::AbstractVector;
+function _dm_commands_figure(topology::AdaptiveOpticsSim.ActuatorGridTopology, command::AbstractVector;
     title::AbstractString="DM Commands", kwargs...)
     n = AdaptiveOpticsSim.topology_axis_count(topology)
     full = fill(NaN, n * n)
@@ -9,7 +9,7 @@ function plot_dm_commands(topology::AdaptiveOpticsSim.ActuatorGridTopology, comm
     return _heatmap2d(reshape(full, n, n); title=title, kwargs...)
 end
 
-function plot_dm_commands(topology::AdaptiveOpticsSim.SampledActuatorTopology, command::AbstractVector;
+function _dm_commands_figure(topology::AdaptiveOpticsSim.SampledActuatorTopology, command::AbstractVector;
     title::AbstractString="DM Commands", kwargs...)
     coords = AdaptiveOpticsSim.actuator_coordinates(topology)
     data = _plot_vector_data(command)
@@ -23,8 +23,8 @@ function plot_dm_commands(topology::AdaptiveOpticsSim.SampledActuatorTopology, c
         kwargs...)
 end
 
-plot_dm_opd(dm::AdaptiveOpticsSim.AbstractDeformableMirror; title::AbstractString="DM OPD", kwargs...) =
-    plot_opd(AdaptiveOpticsSim.surface_opd(dm); title=title, kwargs...)
+_dm_opd_figure(dm::AdaptiveOpticsSim.AbstractDeformableMirror; title::AbstractString="DM OPD", kwargs...) =
+    _opd_figure(AdaptiveOpticsSim.surface_opd(dm); title=title, kwargs...)
 
-plot_dm_opd(dm::AdaptiveOpticsSim.AbstractDeformableMirror, ::AdaptiveOpticsSim.AbstractTelescope; kwargs...) =
-    plot_dm_opd(dm; kwargs...)
+_dm_opd_figure(dm::AdaptiveOpticsSim.AbstractDeformableMirror, ::AdaptiveOpticsSim.AbstractTelescope; kwargs...) =
+    _dm_opd_figure(dm; kwargs...)

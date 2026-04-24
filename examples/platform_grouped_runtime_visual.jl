@@ -1,0 +1,35 @@
+include(joinpath(@__DIR__, "common.jl"))
+
+function build_branch(label::Symbol, seed::Integer)
+    tel = Telescope(resolution=16, diameter=8.0, sampling_time=1e-3, central_obstruction=0.0)
+    src = Source(band=:I, magnitude=0.0)
+    atm = KolmogorovAtmosphere(tel; r0=0.2, L0=25.0)
+    dm = DeformableMirror(tel; n_act=4, influence_width=0.3)
+    wfs = ShackHartmann(tel; n_subap=4, mode=Diffractive())
+    sim = AOSimulation(tel, src, atm, dm, wfs)
+    imat = interaction_matrix(dm, wfs, tel, src; amplitude=0.1)
+    recon = ModalReconstructor(imat; gain=0.5)
+    det = Detector(noise=NoiseNone(), integration_time=1.0, qe=1.0, binning=1)
+    return RuntimeBranch(label, sim, recon; wfs_detector=det, rng=MersenneTwister(seed))
+end
+
+cfg = GroupedRuntimeConfig(
+    (:high, :low);
+    name=:grouped_runtime_demo,
+    products=GroupedRuntimeProductRequirements(wfs_frames=true, science_frames=false, wfs_stack=true, science_stack=false),
+)
+scenario = build_runtime_scenario(cfg, build_branch(:high, 1), build_branch(:low, 2))
+prepare!(scenario)
+step!(scenario)
+
+stack_data = grouped_wfs_stack(scenario)
+frame_high = dropdims(sum(selectdim(stack_data, ndims(stack_data), 1); dims=3), dims=3)
+frame_low = dropdims(sum(selectdim(stack_data, ndims(stack_data), 2); dims=3), dims=3)
+
+display(Plots.plot(
+    aoplot(frame_high, WFSFrame(); title="High Branch WFS"),
+    aoplot(frame_low, WFSFrame(); title="Low Branch WFS"),
+    aoplot(slopes(scenario), Signal(); title="Grouped Slopes"),
+    layout=(1, 3),
+    size=(1200, 360),
+))

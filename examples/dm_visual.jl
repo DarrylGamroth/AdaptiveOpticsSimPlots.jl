@@ -14,9 +14,9 @@ sampled_dm.state.coefs .= [0.1, -0.2, 0.3, -0.4]
 apply_opd!(sampled_dm, tel)
 
 display(Plots.plot(
-    plot_dm_commands(dm; title="Grid DM Commands"),
-    plot_dm_opd(dm; title="Grid DM OPD"),
-    plot_dm_commands(sampled_dm; title="Sampled DM Commands"),
+    aoplot(dm, Commands(); title="Grid DM Commands"),
+    aoplot(dm, OPD(); title="Grid DM OPD"),
+    aoplot(sampled_dm, Commands(); title="Sampled DM Commands"),
     layout=(1, 3),
     size=(1100, 360),
 ))

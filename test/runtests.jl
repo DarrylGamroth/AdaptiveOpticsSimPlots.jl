@@ -12,6 +12,10 @@ function include_script_in_fresh_module(path::AbstractString)
 end
 
 @testset "AdaptiveOpticsSimPlots" begin
+    @test :plot_pupil ∉ names(AdaptiveOpticsSimPlots)
+    @test :plot_wfs_frame ∉ names(AdaptiveOpticsSimPlots)
+    @test :plot_signal_trace ∉ names(AdaptiveOpticsSimPlots)
+
     tel = Telescope(resolution=16, diameter=8.0, sampling_time=1e-3, central_obstruction=0.0)
     tel.state.opd .= reshape(range(-1.0, 1.0; length=16 * 16), 16, 16)
     src = Source(band=:I, magnitude=0.0)
@@ -25,18 +29,22 @@ end
 
     pyr = PyramidWFS(tel; n_subap=4, mode=Diffractive(), modulation=1.0)
     measure!(pyr, tel, src)
+    sh = ShackHartmann(tel; n_subap=4, mode=Diffractive(), pixel_scale=0.1, n_pix_subap=6)
+    prepare_runtime_wfs!(sh, tel, src)
+    measure!(sh, tel, src)
 
-    plt_pupil = plot_pupil(tel)
-    plt_opd = plot_opd(tel)
-    plt_psf = plot_psf(fill(1.0, 8, 8))
-    plt_science = plot_science_frame(fill(1.0, 8, 8))
-    plt_detector = plot_detector_frame(det)
-    plt_wfs = plot_wfs_frame(pyr)
-    plt_dm = plot_dm_commands(dm)
-    plt_dm_opd = plot_dm_opd(dm)
-    plt_signal = plot_signal_trace(collect(1.0:8.0))
-    plt_runtime_named = plot_runtime_timeseries((residual=collect(1.0:5.0), strehl=collect(5.0:-1.0:1.0)))
-    plt_runtime_log = plot_runtime_timeseries([(residual=i, strehl=6 - i) for i in 1:5])
+    plt_pupil = aoplot(tel, Pupil())
+    plt_opd = aoplot(tel, OPD())
+    plt_psf = aoplot(fill(1.0, 8, 8), PSF())
+    plt_science = aoplot(fill(1.0, 8, 8), ScienceFrame())
+    plt_detector = aoplot(det, DetectorFrame())
+    plt_wfs = aoplot(pyr, WFSFrame())
+    plt_sh_detector = aoplot(sh, ShackHartmannDetectorFrame())
+    plt_dm = aoplot(dm, Commands())
+    plt_dm_opd = aoplot(dm, OPD())
+    plt_signal = aoplot(collect(1.0:8.0), Signal())
+    plt_runtime_named = aoplot((residual=collect(1.0:5.0), strehl=collect(5.0:-1.0:1.0)), RuntimeTimeseries())
+    plt_runtime_log = aoplot([(residual=i, strehl=6 - i) for i in 1:5], RuntimeTimeseries())
 
     @test plt_pupil isa Plots.Plot
     @test plt_opd isa Plots.Plot
@@ -44,20 +52,23 @@ end
     @test plt_science isa Plots.Plot
     @test plt_detector isa Plots.Plot
     @test plt_wfs isa Plots.Plot
+    @test plt_sh_detector isa Plots.Plot
     @test plt_dm isa Plots.Plot
     @test plt_dm_opd isa Plots.Plot
     @test plt_signal isa Plots.Plot
     @test plt_runtime_named isa Plots.Plot
     @test plt_runtime_log isa Plots.Plot
 
-    @test aoplot(tel) isa Plots.Plot
-    @test aoplot(tel; surface=:opd) isa Plots.Plot
-    @test aoplot(det) isa Plots.Plot
-    @test aoplot(pyr) isa Plots.Plot
-    @test aoplot(pyr; kind=:signal) isa Plots.Plot
-    @test aoplot(dm) isa Plots.Plot
-    @test aoplot(dm; kind=:opd) isa Plots.Plot
-    @test aoplot(collect(1.0:4.0)) isa Plots.Plot
+    @test aoplot(tel, Pupil()) isa Plots.Plot
+    @test aoplot(tel, OPD()) isa Plots.Plot
+    @test aoplot(det, DetectorFrame()) isa Plots.Plot
+    @test aoplot(pyr, WFSFrame()) isa Plots.Plot
+    @test aoplot(pyr, Signal()) isa Plots.Plot
+    @test aoplot(sh, ShackHartmannDetectorFrame()) isa Plots.Plot
+    @test aoplot(sh, Signal()) isa Plots.Plot
+    @test aoplot(dm, Commands()) isa Plots.Plot
+    @test aoplot(dm, OPD()) isa Plots.Plot
+    @test aoplot(collect(1.0:4.0), Signal()) isa Plots.Plot
 
     sampled_topology = SampledActuatorTopology(actuator_coordinates(dm)[:, 1:4];
         metadata=(manufacturer=:alpao,))
@@ -65,7 +76,7 @@ end
     sampled_dm = DeformableMirror(tel; topology=sampled_topology,
         influence_model=MeasuredInfluenceFunctions(measured_modes))
     sampled_dm.state.coefs .= [0.1, -0.2, 0.3, -0.4]
-    @test plot_dm_commands(sampled_dm) isa Plots.Plot
+    @test aoplot(sampled_dm, Commands()) isa Plots.Plot
 
     atm = KolmogorovAtmosphere(tel; r0=0.2, L0=25.0)
     runtime_sim = AOSimulation(tel, src, atm, dm, pyr)
@@ -83,31 +94,31 @@ end
     ))
     runtime_scenario = build_runtime_scenario(runtime_cfg, runtime_branch)
     prepare!(runtime_scenario)
-    @test aoplot(runtime_scenario) isa Plots.Plot
-    @test aoplot(runtime_scenario; surface=:science) isa Plots.Plot
-    @test aoplot(runtime_scenario; surface=:signal) isa Plots.Plot
+    @test aoplot(runtime_scenario, WFSFrame()) isa Plots.Plot
+    @test aoplot(runtime_scenario, ScienceFrame()) isa Plots.Plot
+    @test aoplot(runtime_scenario, Signal()) isa Plots.Plot
 
-    @test_throws ArgumentError plot_wfs_frame(ShackHartmann(tel; n_subap=4))
-    @test_throws ArgumentError aoplot(tel; surface=:bad)
-    @test_throws ArgumentError aoplot(dm; kind=:bad)
+    sh_image = shack_hartmann_detector_image(sh; gap=2)
+    @test size(sh_image) == (4 * 6 + 3 * 2, 4 * 6 + 3 * 2)
+    @test_throws MethodError aoplot(tel)
+    @test_throws MethodError aoplot(dm)
+    @test_throws MethodError aoplot(runtime_scenario)
+    @test_throws MethodError aoplot(tel; surface=:opd)
+    @test_throws MethodError aoplot(sh; kind=:signal)
 end
 
 @testset "Visual example scripts" begin
     example_dir = joinpath(@__DIR__, "..", "examples")
-    for script in (
-        "image_formation_visual.jl",
-        "detector_visual.jl",
-        "dm_visual.jl",
-        "wfs_visual.jl",
-        "closed_loop_runtime_visual.jl",
-        "tutorial_image_formation_visual.jl",
-        "tutorial_detector_visual.jl",
-        "tutorial_closed_loop_shack_hartmann_visual.jl",
-        "tutorial_closed_loop_pyramid_visual.jl",
-        "tutorial_closed_loop_bioedge_visual.jl",
-        "tutorial_asterism_visual.jl",
-        "tutorial_spatial_filter_visual.jl",
-    )
+    scripts = filter(readdir(example_dir)) do file
+        endswith(file, ".jl") && file != "common.jl"
+    end
+    for script in sort(scripts)
+        source = read(joinpath(example_dir, script), String)
+        @test length(collect(eachmatch(r"display\(", source))) <= 1
+        @test !occursin(r"\bplot_[A-Za-z0-9_]+", source)
+        @test !occursin(r"aoplot\([^\n;]+; (kind|surface)", source)
+        includes = collect(eachmatch(r"include\(joinpath\(@__DIR__, \"([^\"]+)\"\)\)", source))
+        @test all(match.captures[1] == "common.jl" for match in includes)
         include_script_in_fresh_module(joinpath(example_dir, script))
     end
     @test true

@@ -1,62 +1,60 @@
+"""
+aoplot(obj, selector; kwargs...) -> Plots.Plot
+
+Render an `AdaptiveOpticsSim.jl` object or array using a dispatchable plot
+selector such as `Pupil()`, `OPD()`, `PSF()`, `WFSFrame()`, `Commands()`, or
+`Signal()`.
+
+`AdaptiveOpticsSimPlots.jl` intentionally exposes this package-owned function
+instead of extending `Plots.plot` for simulation types.
+"""
 function aoplot end
 
-function aoplot(tel::AdaptiveOpticsSim.AbstractTelescope; surface::Symbol=:pupil, kwargs...)
-    if surface === :pupil
-        return plot_pupil(tel; kwargs...)
-    elseif surface === :opd
-        return plot_opd(tel; kwargs...)
-    else
-        throw(ArgumentError("unsupported telescope surface $(repr(surface)); expected :pupil or :opd"))
-    end
-end
+aoplot(tel::AdaptiveOpticsSim.AbstractTelescope, ::Pupil; kwargs...) = _pupil_figure(tel; kwargs...)
+aoplot(tel::AdaptiveOpticsSim.AbstractTelescope, ::OPD; kwargs...) = _opd_figure(tel; kwargs...)
 
-aoplot(det::AdaptiveOpticsSim.AbstractDetector; kwargs...) = plot_detector_frame(det; kwargs...)
-aoplot(signal::AbstractVector; kwargs...) = plot_signal_trace(signal; kwargs...)
+aoplot(mask::AbstractMatrix, ::Pupil; kwargs...) = _pupil_figure(mask; kwargs...)
+aoplot(opd::AbstractMatrix, ::OPD; kwargs...) = _opd_figure(opd; kwargs...)
+aoplot(psf::AbstractMatrix, ::PSF; kwargs...) = _psf_figure(psf; kwargs...)
+aoplot(frame::AbstractMatrix, ::ScienceFrame; kwargs...) = _science_frame_figure(frame; kwargs...)
+aoplot(frame::AbstractMatrix, ::DetectorFrame; kwargs...) = _detector_frame_figure(frame; kwargs...)
+aoplot(frame::AbstractMatrix, ::WFSFrame; kwargs...) = _wfs_frame_figure(frame; kwargs...)
 
-function aoplot(wfs::AdaptiveOpticsSim.AbstractWFS; kind::Symbol=:frame, kwargs...)
-    if kind === :frame
-        return plot_wfs_frame(wfs; kwargs...)
-    elseif kind === :signal
-        return plot_signal_trace(AdaptiveOpticsSim.slopes(wfs); title="WFS Signal", kwargs...)
-    else
-        throw(ArgumentError("unsupported WFS kind $(repr(kind)); expected :frame or :signal"))
-    end
-end
+aoplot(det::AdaptiveOpticsSim.AbstractDetector, ::DetectorFrame; kwargs...) = _detector_frame_figure(det; kwargs...)
 
-function aoplot(dm::AdaptiveOpticsSim.AbstractDeformableMirror; kind::Symbol=:commands, kwargs...)
-    if kind === :commands
-        return plot_dm_commands(dm; kwargs...)
-    elseif kind === :opd
-        return plot_dm_opd(dm; kwargs...)
-    else
-        throw(ArgumentError("unsupported DM kind $(repr(kind)); expected :commands or :opd"))
-    end
-end
+aoplot(signal::AbstractVector, ::Signal; kwargs...) = _signal_trace_figure(signal; kwargs...)
 
-function aoplot(optic::AdaptiveOpticsSim.AbstractControllableOptic; kind::Symbol=:signal, kwargs...)
-    if kind === :signal
-        return plot_signal_trace(AdaptiveOpticsSim.command_storage(optic); title="Control Signal", kwargs...)
-    elseif kind === :opd
-        return plot_opd(AdaptiveOpticsSim.surface_opd(optic); title="Controllable Optic OPD", kwargs...)
-    else
-        throw(ArgumentError("unsupported controllable-optic kind $(repr(kind)); expected :signal or :opd"))
-    end
-end
+aoplot(log::NamedTuple, ::RuntimeTimeseries; kwargs...) = _runtime_timeseries_figure(log; kwargs...)
+aoplot(log::AbstractVector{<:NamedTuple}, ::RuntimeTimeseries; kwargs...) = _runtime_timeseries_figure(log; kwargs...)
 
-function aoplot(x::Union{
-        AdaptiveOpticsSim.AbstractControlSimulation,
-        AdaptiveOpticsSim.ClosedLoopRuntime,
-        AdaptiveOpticsSim.SimulationInterface,
-        AdaptiveOpticsSim.CompositeSimulationInterface,
-        AdaptiveOpticsSim.SimulationReadout,
-    }; surface::Symbol=:wfs, kwargs...)
-    if surface === :wfs
-        return plot_wfs_frame(x; kwargs...)
-    elseif surface === :science
-        return plot_science_frame(x; kwargs...)
-    elseif surface === :signal
-        return plot_signal_trace(AdaptiveOpticsSim.slopes(x); title="Runtime Signal", kwargs...)
-    else
-        throw(ArgumentError("unsupported runtime surface $(repr(surface)); expected :wfs, :science, or :signal"))
-    end
-end
+aoplot(wfs::AdaptiveOpticsSim.AbstractWFS, ::WFSFrame; kwargs...) = _wfs_frame_figure(wfs; kwargs...)
+aoplot(wfs::AdaptiveOpticsSim.AbstractWFS, ::Signal; kwargs...) =
+    _signal_trace_figure(AdaptiveOpticsSim.slopes(wfs); title="WFS Signal", kwargs...)
+
+aoplot(wfs::AdaptiveOpticsSim.ShackHartmann, ::WFSFrame; kwargs...) =
+    _shack_hartmann_detector_frame_figure(wfs; kwargs...)
+aoplot(wfs::AdaptiveOpticsSim.ShackHartmann, ::DetectorFrame; kwargs...) =
+    _shack_hartmann_detector_frame_figure(wfs; kwargs...)
+aoplot(wfs::AdaptiveOpticsSim.ShackHartmann, ::ShackHartmannDetectorFrame; kwargs...) =
+    _shack_hartmann_detector_frame_figure(wfs; kwargs...)
+
+aoplot(dm::AdaptiveOpticsSim.AbstractDeformableMirror, ::Commands; kwargs...) = _dm_commands_figure(dm; kwargs...)
+aoplot(dm::AdaptiveOpticsSim.AbstractDeformableMirror, ::OPD; kwargs...) = _dm_opd_figure(dm; kwargs...)
+
+aoplot(optic::AdaptiveOpticsSim.AbstractControllableOptic, ::Signal; kwargs...) =
+    _signal_trace_figure(AdaptiveOpticsSim.command_storage(optic); title="Control Signal", kwargs...)
+aoplot(optic::AdaptiveOpticsSim.AbstractControllableOptic, ::OPD; kwargs...) =
+    _opd_figure(AdaptiveOpticsSim.surface_opd(optic); title="Controllable Optic OPD", kwargs...)
+
+const _RuntimeLike = Union{
+    AdaptiveOpticsSim.AbstractControlSimulation,
+    AdaptiveOpticsSim.ClosedLoopRuntime,
+    AdaptiveOpticsSim.SimulationInterface,
+    AdaptiveOpticsSim.CompositeSimulationInterface,
+    AdaptiveOpticsSim.SimulationReadout,
+}
+
+aoplot(x::_RuntimeLike, ::WFSFrame; kwargs...) = _wfs_frame_figure(x; kwargs...)
+aoplot(x::_RuntimeLike, ::ScienceFrame; kwargs...) = _science_frame_figure(x; kwargs...)
+aoplot(x::_RuntimeLike, ::Signal; kwargs...) =
+    _signal_trace_figure(AdaptiveOpticsSim.slopes(x); title="Runtime Signal", kwargs...)

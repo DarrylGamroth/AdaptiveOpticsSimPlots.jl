@@ -7,8 +7,8 @@ filter = SpatialFilter(tel; shape=CircularFilter(), diameter=24 ÷ 3, zero_paddi
 phase, amplitude = filter!(filter, tel, src)
 
 display(Plots.plot(
-    plot_opd(phase; title="Filtered Phase"),
-    plot_pupil(abs2.(amplitude); title="Filtered Amplitude"),
+    aoplot(phase, OPD(); title="Filtered Phase"),
+    aoplot(abs2.(amplitude), Pupil(); title="Filtered Amplitude"),
     layout=(1, 2),
     size=(900, 380),
 ))

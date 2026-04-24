@@ -10,8 +10,8 @@ apply_opd!(tel, zb.modes[:, :, 6] .* 80e-9)
 psf_aberrated = copy(compute_psf!(tel, src; zero_padding=2))
 
 display(Plots.plot(
-    plot_psf(psf_nominal; title="Nominal PSF"),
-    plot_psf(psf_aberrated; title="Aberrated PSF"),
+    aoplot(psf_nominal, PSF(); title="Nominal PSF"),
+    aoplot(psf_aberrated, PSF(); title="Aberrated PSF"),
     layout=(1, 2),
     size=(900, 380),
 ))

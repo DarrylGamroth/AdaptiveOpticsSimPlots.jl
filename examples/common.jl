@@ -1,5 +1,6 @@
 using AdaptiveOpticsSim
 using AdaptiveOpticsSimPlots
+using LinearAlgebra
 using Logging
 using Plots
 using Random
@@ -48,6 +49,15 @@ function pupil_rms(opd::AbstractMatrix, pupil::AbstractMatrix{Bool})
     return sqrt(sum(abs2, vals) / length(vals))
 end
 
+function combine_modes(basis::AbstractArray{T,3}, coeffs::AbstractVector{<:Real}) where {T}
+    opd = zeros(T, size(basis, 1), size(basis, 2))
+    n_modes = min(size(basis, 3), length(coeffs))
+    @inbounds for k in 1:n_modes
+        @views @. opd += T(coeffs[k]) * basis[:, :, k]
+    end
+    return opd
+end
+
 function run_closed_loop_example(make_wfs::Function; n_iter::Int=4, seed::Integer=0,
     resolution::Int=16, n_subap::Int=4, n_act::Int=3, amplitude::Real=1e-9, gain::Real=0.4)
     rng = tutorial_rng(seed)
@@ -80,4 +90,15 @@ function run_closed_loop_example(make_wfs::Function; n_iter::Int=4, seed::Intege
         final_psf=psf,
         final_slopes=copy(wfs.state.slopes),
     )
+end
+
+function loop_summary_figure(command_data, slope_data, residual_data=nothing; title_prefix::AbstractString="Closed Loop")
+    plots = Any[
+        aoplot(command_data, Signal(); title="$(title_prefix) Command", ylabel="command"),
+        aoplot(slope_data, Signal(); title="$(title_prefix) Slopes", ylabel="slope"),
+    ]
+    if !isnothing(residual_data)
+        pushfirst!(plots, aoplot(residual_data, Signal(); title="$(title_prefix) Residual", ylabel="meters"))
+    end
+    return Plots.plot(plots...; layout=(1, length(plots)), size=(420 * length(plots), 360))
 end

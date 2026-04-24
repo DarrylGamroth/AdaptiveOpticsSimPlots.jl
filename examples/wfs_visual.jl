@@ -11,9 +11,9 @@ sh = ShackHartmann(tel; n_subap=4)
 measure!(sh, tel)
 
 display(Plots.plot(
-    plot_wfs_frame(pyr; title="Pyramid Frame"),
-    aoplot(pyr; kind=:signal, title="Pyramid Signal"),
-    aoplot(sh; kind=:signal, title="Shack-Hartmann Signal"),
+    aoplot(pyr, WFSFrame(); title="Pyramid Frame"),
+    aoplot(pyr, Signal(); title="Pyramid Signal"),
+    aoplot(sh, Signal(); title="Shack-Hartmann Signal"),
     layout=(1, 3),
     size=(1200, 360),
 ))

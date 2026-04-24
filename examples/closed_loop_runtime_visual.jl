@@ -23,9 +23,9 @@ scenario = build_runtime_scenario(cfg, branch)
 prepare!(scenario)
 
 display(Plots.plot(
-    aoplot(scenario; surface=:wfs),
-    aoplot(scenario; surface=:science),
-    aoplot(scenario; surface=:signal),
+    aoplot(scenario, WFSFrame()),
+    aoplot(scenario, ScienceFrame()),
+    aoplot(scenario, Signal()),
     layout=(1, 3),
     size=(1200, 360),
 ))

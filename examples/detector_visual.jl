@@ -11,9 +11,9 @@ frame_native = capture!(native, psf)
 frame_sampled = capture!(sampled, psf)
 
 display(Plots.plot(
-    plot_psf(psf; title="Input PSF"),
-    plot_detector_frame(frame_native; title="Native Sampling"),
-    plot_detector_frame(frame_sampled; title="Sampled + Binned"),
+    aoplot(psf, PSF(); title="Input PSF"),
+    aoplot(frame_native, DetectorFrame(); title="Native Sampling"),
+    aoplot(frame_sampled, DetectorFrame(); title="Sampled + Binned"),
     layout=(1, 3),
     size=(1100, 360),
 ))

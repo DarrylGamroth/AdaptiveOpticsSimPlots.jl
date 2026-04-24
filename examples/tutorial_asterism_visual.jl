@@ -25,9 +25,9 @@ plt_sources = Plots.scatter(x, y;
     label=nothing,
 )
 
-plots = Any[plt_sources, plot_psf(combined_psf; title="Combined PSF")]
+plots = Any[plt_sources, aoplot(combined_psf, PSF(); title="Combined PSF")]
 for i in 1:min(size(per_source_psf, 3), 4)
-    push!(plots, plot_psf(selectdim(per_source_psf, 3, i); title="Source $(i) PSF"))
+    push!(plots, aoplot(selectdim(per_source_psf, 3, i), PSF(); title="Source $(i) PSF"))
 end
 
 display(Plots.plot(plots...; layout=(2, 3), size=(1100, 760)))

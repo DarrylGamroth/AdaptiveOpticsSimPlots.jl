@@ -1,4 +1,4 @@
-function plot_signal_trace(signal::AbstractVector; title::AbstractString="Signal Trace",
+function _signal_trace_figure(signal::AbstractVector; title::AbstractString="Signal Trace",
     xlabel::AbstractString="sample", ylabel::AbstractString="value", label=nothing, kwargs...)
     data = _plot_vector_data(signal)
     series_label = isnothing(label) ? nothing : String(label)
@@ -10,7 +10,7 @@ function plot_signal_trace(signal::AbstractVector; title::AbstractString="Signal
         kwargs...)
 end
 
-function plot_runtime_timeseries(log::NamedTuple; fields=nothing, title::AbstractString="Runtime Timeseries",
+function _runtime_timeseries_figure(log::NamedTuple; fields=nothing, title::AbstractString="Runtime Timeseries",
     xlabel::AbstractString="sample", ylabel::AbstractString="value", kwargs...)
     names = isnothing(fields) ? propertynames(log) : Tuple(fields)
     plt = Plots.plot(; title=title, xlabel=xlabel, ylabel=ylabel, kwargs...)
@@ -21,7 +21,7 @@ function plot_runtime_timeseries(log::NamedTuple; fields=nothing, title::Abstrac
     return plt
 end
 
-function plot_runtime_timeseries(log::AbstractVector{<:NamedTuple}; fields=nothing, title::AbstractString="Runtime Timeseries",
+function _runtime_timeseries_figure(log::AbstractVector{<:NamedTuple}; fields=nothing, title::AbstractString="Runtime Timeseries",
     xlabel::AbstractString="sample", ylabel::AbstractString="value", kwargs...)
     isempty(log) && throw(ArgumentError("runtime log must not be empty"))
     names = isnothing(fields) ? propertynames(first(log)) : Tuple(fields)
