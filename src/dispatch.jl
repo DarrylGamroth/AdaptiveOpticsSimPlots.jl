@@ -28,6 +28,7 @@ aoplot(log::NamedTuple, ::RuntimeTimeseries; kwargs...) = _runtime_timeseries_fi
 aoplot(log::AbstractVector{<:NamedTuple}, ::RuntimeTimeseries; kwargs...) = _runtime_timeseries_figure(log; kwargs...)
 
 aoplot(wfs::AdaptiveOpticsSim.AbstractWFS, ::WFSFrame; kwargs...) = _wfs_frame_figure(wfs; kwargs...)
+aoplot(wfs::AdaptiveOpticsSim.AbstractWFS, ::DetectorFrame; kwargs...) = _wfs_detector_frame_figure(wfs; kwargs...)
 aoplot(wfs::AdaptiveOpticsSim.AbstractWFS, ::Signal; kwargs...) =
     _signal_trace_figure(AdaptiveOpticsSim.slopes(wfs); title="WFS Signal", kwargs...)
 

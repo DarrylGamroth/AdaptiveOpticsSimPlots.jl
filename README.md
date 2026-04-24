@@ -34,6 +34,7 @@ aoplot(tel, Pupil())
 aoplot(tel, OPD())
 aoplot(psf, PSF())
 aoplot(detector, DetectorFrame())
+aoplot(wfs, DetectorFrame())
 aoplot(wfs, WFSFrame())
 aoplot(shack_hartmann, ShackHartmannDetectorFrame())
 aoplot(dm, Commands())
@@ -46,6 +47,12 @@ The package intentionally does not extend `Plots.plot` for
 `AdaptiveOpticsSim.jl` types. `Plots.plot` and those simulation types are owned
 by different packages, so extending it here would be type piracy.
 
+For WFS detector images, `aoplot(wfs, DetectorFrame())` renders the core
+`AdaptiveOpticsSim.wfs_detector_image` product. Pyramid, BioEdge, Zernike, and
+Curvature sensors render their maintained 2-D camera/readout frames.
+Shack-Hartmann renders the core detector mosaic assembled from its lenslet spot
+cube.
+
 ## Preview
 
 `examples/image_formation_visual.jl`:
@@ -55,6 +62,10 @@ by different packages, so extending it here would be type piracy.
 `examples/shack_hartmann_detector_mosaic_visual.jl`:
 
 ![Shack-Hartmann detector mosaic](docs/assets/shack_hartmann_detector_mosaic.png)
+
+`examples/wfs_detector_comparison_visual.jl`:
+
+![WFS detector comparison](docs/assets/wfs_detector_comparison_visual.png)
 
 ## Install
 
@@ -83,6 +94,7 @@ The quick visual examples are:
 - `examples/dm_visual.jl`: grid and sampled DM command/OPD views.
 - `examples/wfs_visual.jl`: Pyramid frame plus Pyramid and Shack-Hartmann signals.
 - `examples/shack_hartmann_detector_mosaic_visual.jl`: detector-like Shack-Hartmann lenslet spot mosaic.
+- `examples/wfs_detector_comparison_visual.jl`: one wavefront viewed through Pyramid, BioEdge, Zernike, Curvature, and Shack-Hartmann detector frames.
 - `examples/closed_loop_runtime_visual.jl`: runtime WFS frame, science frame, and signal trace.
 
 The OOPAO-style tutorial examples are:

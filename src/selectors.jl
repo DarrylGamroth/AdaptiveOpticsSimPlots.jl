@@ -33,7 +33,9 @@ struct ScienceFrame <: AbstractAOPlot end
 """
     DetectorFrame()
 
-Select a detector frame view for detector objects or detector-frame matrices.
+Select a detector frame view for detector objects, detector-frame matrices, or
+wavefront sensors that expose detector camera frames. Shack-Hartmann WFS
+objects render as a tiled lenslet spot mosaic.
 """
 struct DetectorFrame <: AbstractAOPlot end
 

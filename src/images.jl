@@ -32,55 +32,18 @@ _detector_frame_figure(frame::AbstractMatrix; title::AbstractString="Detector Fr
 _detector_frame_figure(det::AdaptiveOpticsSim.AbstractDetector; title::AbstractString="Detector Frame", kwargs...) =
     _detector_frame_figure(AdaptiveOpticsSim.output_frame(det); title=title, kwargs...)
 
+function _wfs_detector_frame_figure(wfs::AdaptiveOpticsSim.AbstractWFS; title::AbstractString="WFS Detector Frame", kwargs...)
+    frame = AdaptiveOpticsSim.wfs_detector_image(wfs)
+    return _detector_frame_figure(frame; title=title, kwargs...)
+end
+
 _wfs_frame_figure(frame::AbstractMatrix; title::AbstractString="WFS Frame", kwargs...) =
     _heatmap2d(_plot_matrix_data(frame); title=title, kwargs...)
-
-"""
-    shack_hartmann_detector_image(spot_cube, n_subap; gap=1, gap_value=0)
-    shack_hartmann_detector_image(wfs; gap=1, gap_value=0)
-
-Tile a Shack-Hartmann lenslet spot cube into a detector-like mosaic image.
-
-The spot cube is expected to have shape `(n_subap^2, n_pix_subap,
-n_pix_subap)`. `gap` inserts separator pixels between subaperture tiles.
-"""
-function shack_hartmann_detector_image(spot_cube::AbstractArray, n_subap::Integer; gap::Integer=1, gap_value=0)
-    ndims(spot_cube) == 3 || throw(DimensionMismatch("spot cube must have shape (n_subap^2, n_pix_subap, n_pix_subap)"))
-    n_sub = Int(n_subap)
-    n_sub > 0 || throw(ArgumentError("n_subap must be positive"))
-    gap_px = Int(gap)
-    gap_px >= 0 || throw(ArgumentError("gap must be non-negative"))
-
-    spots = _host_array(spot_cube)
-    n_spots, n_y, n_x = size(spots)
-    n_spots == n_sub * n_sub ||
-        throw(DimensionMismatch("spot cube first dimension must equal n_subap^2; got $n_spots for n_subap=$n_sub"))
-
-    T = promote_type(eltype(spots), typeof(gap_value))
-    image = fill(T(gap_value),
-        n_sub * n_y + (n_sub - 1) * gap_px,
-        n_sub * n_x + (n_sub - 1) * gap_px)
-
-    @inbounds for i in 1:n_sub, j in 1:n_sub
-        idx = (i - 1) * n_sub + j
-        y0 = (i - 1) * (n_y + gap_px) + 1
-        x0 = (j - 1) * (n_x + gap_px) + 1
-        @views image[y0:(y0 + n_y - 1), x0:(x0 + n_x - 1)] .= spots[idx, :, :]
-    end
-    return image
-end
-
-function shack_hartmann_detector_image(wfs::AdaptiveOpticsSim.ShackHartmann; kwargs...)
-    return shack_hartmann_detector_image(
-        AdaptiveOpticsSim.sh_exported_spot_cube(wfs),
-        wfs.params.n_subap;
-        kwargs...)
-end
 
 function _shack_hartmann_detector_frame_figure(spot_cube::AbstractArray, n_subap::Integer;
     stretch::Symbol=:linear, title::AbstractString="Shack-Hartmann Detector Frame",
     gap::Integer=1, gap_value=0, kwargs...)
-    frame = shack_hartmann_detector_image(spot_cube, n_subap; gap=gap, gap_value=gap_value)
+    frame = AdaptiveOpticsSim.shack_hartmann_detector_image(spot_cube, n_subap; gap=gap, gap_value=gap_value)
     data = _apply_image_stretch(_plot_matrix_data(frame), stretch)
     return _heatmap2d(data; title=title, kwargs...)
 end
@@ -88,7 +51,7 @@ end
 function _shack_hartmann_detector_frame_figure(wfs::AdaptiveOpticsSim.ShackHartmann;
     stretch::Symbol=:linear, title::AbstractString="Shack-Hartmann Detector Frame",
     gap::Integer=1, gap_value=0, kwargs...)
-    frame = shack_hartmann_detector_image(wfs; gap=gap, gap_value=gap_value)
+    frame = AdaptiveOpticsSim.wfs_detector_image(wfs; gap=gap, gap_value=gap_value)
     data = _apply_image_stretch(_plot_matrix_data(frame), stretch)
     return _heatmap2d(data; title=title, kwargs...)
 end

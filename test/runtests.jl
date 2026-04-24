@@ -29,6 +29,12 @@ end
 
     pyr = PyramidWFS(tel; n_subap=4, mode=Diffractive(), modulation=1.0)
     measure!(pyr, tel, src)
+    bio = BioEdgeWFS(tel; n_subap=4, mode=Diffractive(), modulation=1.0)
+    measure!(bio, tel, src)
+    zwfs = ZernikeWFS(tel; n_subap=4)
+    measure!(zwfs, tel, src)
+    curv = CurvatureWFS(tel; n_subap=4)
+    measure!(curv, tel, src)
     sh = ShackHartmann(tel; n_subap=4, mode=Diffractive(), pixel_scale=0.1, n_pix_subap=6)
     prepare_runtime_wfs!(sh, tel, src)
     measure!(sh, tel, src)
@@ -39,6 +45,10 @@ end
     plt_science = aoplot(fill(1.0, 8, 8), ScienceFrame())
     plt_detector = aoplot(det, DetectorFrame())
     plt_wfs = aoplot(pyr, WFSFrame())
+    plt_pyr_detector = aoplot(pyr, DetectorFrame())
+    plt_bio_detector = aoplot(bio, DetectorFrame())
+    plt_zwfs_detector = aoplot(zwfs, DetectorFrame())
+    plt_curv_detector = aoplot(curv, DetectorFrame())
     plt_sh_detector = aoplot(sh, ShackHartmannDetectorFrame())
     plt_dm = aoplot(dm, Commands())
     plt_dm_opd = aoplot(dm, OPD())
@@ -52,6 +62,10 @@ end
     @test plt_science isa Plots.Plot
     @test plt_detector isa Plots.Plot
     @test plt_wfs isa Plots.Plot
+    @test plt_pyr_detector isa Plots.Plot
+    @test plt_bio_detector isa Plots.Plot
+    @test plt_zwfs_detector isa Plots.Plot
+    @test plt_curv_detector isa Plots.Plot
     @test plt_sh_detector isa Plots.Plot
     @test plt_dm isa Plots.Plot
     @test plt_dm_opd isa Plots.Plot
@@ -63,7 +77,12 @@ end
     @test aoplot(tel, OPD()) isa Plots.Plot
     @test aoplot(det, DetectorFrame()) isa Plots.Plot
     @test aoplot(pyr, WFSFrame()) isa Plots.Plot
+    @test aoplot(pyr, DetectorFrame()) isa Plots.Plot
+    @test aoplot(bio, DetectorFrame()) isa Plots.Plot
+    @test aoplot(zwfs, DetectorFrame()) isa Plots.Plot
+    @test aoplot(curv, DetectorFrame()) isa Plots.Plot
     @test aoplot(pyr, Signal()) isa Plots.Plot
+    @test aoplot(sh, DetectorFrame()) isa Plots.Plot
     @test aoplot(sh, ShackHartmannDetectorFrame()) isa Plots.Plot
     @test aoplot(sh, Signal()) isa Plots.Plot
     @test aoplot(dm, Commands()) isa Plots.Plot
