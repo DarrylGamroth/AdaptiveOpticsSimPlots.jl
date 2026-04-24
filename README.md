@@ -55,7 +55,9 @@ Shack-Hartmann renders the core detector mosaic assembled from its lenslet spot
 cube. If the detector was configured with a typed digital export such as
 `Detector(bits=12, full_well=30_000.0, output_type=UInt16)`, the plot displays
 that already-quantized ADU image; plotting does not rescale or reinterpret the
-detector output contract.
+detector output contract. Shack-Hartmann detector mosaics default to adjacent
+subaperture images with no artificial separator pixels; pass `gap=N` only for a
+diagnostic layout.
 
 ## Preview
 
@@ -98,7 +100,7 @@ The quick visual examples are:
 - `examples/dm_visual.jl`: grid and sampled DM command/OPD views.
 - `examples/wfs_visual.jl`: Pyramid frame plus Pyramid and Shack-Hartmann signals.
 - `examples/shack_hartmann_detector_mosaic_visual.jl`: detector-like Shack-Hartmann lenslet spot mosaic.
-- `examples/wfs_detector_comparison_visual.jl`: one wavefront viewed through Pyramid, BioEdge, Zernike, Curvature, and Shack-Hartmann detector frames.
+- `examples/wfs_detector_comparison_visual.jl`: one wavefront viewed through Pyramid, BioEdge, Zernike, Curvature, and Shack-Hartmann detector frames with 64x64-class camera readouts.
 - `examples/closed_loop_runtime_visual.jl`: runtime WFS frame, science frame, and signal trace.
 
 The OOPAO-style tutorial examples are:

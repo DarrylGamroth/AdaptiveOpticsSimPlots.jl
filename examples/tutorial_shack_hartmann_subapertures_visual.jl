@@ -10,7 +10,7 @@ compute_zernike!(zb, tel)
 sh = ShackHartmann(tel; n_subap=6, mode=Diffractive(), pixel_scale=0.06, n_pix_subap=8)
 prepare_runtime_wfs!(sh, tel, src)
 slopes_data = copy(measure!(sh, tel, src))
-detector_image = shack_hartmann_detector_image(sh; gap=1)
+detector_image = shack_hartmann_detector_image(sh)
 
 layout = subaperture_layout(sh)
 valid = valid_subaperture_indices(layout)

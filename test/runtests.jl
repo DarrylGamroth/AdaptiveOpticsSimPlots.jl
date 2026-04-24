@@ -119,6 +119,7 @@ end
 
     sh_image = shack_hartmann_detector_image(sh; gap=2)
     @test size(sh_image) == (4 * 6 + 3 * 2, 4 * 6 + 3 * 2)
+    @test size(shack_hartmann_detector_image(sh)) == (4 * 6, 4 * 6)
     @test_throws MethodError aoplot(tel)
     @test_throws MethodError aoplot(dm)
     @test_throws MethodError aoplot(runtime_scenario)

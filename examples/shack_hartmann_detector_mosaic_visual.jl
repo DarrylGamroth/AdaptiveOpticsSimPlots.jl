@@ -12,8 +12,8 @@ prepare_runtime_wfs!(sh, tel, src)
 slopes_data = copy(measure!(sh, tel, src))
 
 display(Plots.plot(
-    aoplot(sh, ShackHartmannDetectorFrame(); title="Detector Scale", stretch=:linear, gap=1),
-    aoplot(sh, ShackHartmannDetectorFrame(); title="Log Diagnostic", stretch=:log10, gap=1),
+    aoplot(sh, ShackHartmannDetectorFrame(); title="Detector Scale", stretch=:linear),
+    aoplot(sh, ShackHartmannDetectorFrame(); title="Log Diagnostic", stretch=:log10),
     aoplot(slopes_data, Signal(); title="SH Slopes"),
     layout=(1, 3),
     size=(1200, 360),
