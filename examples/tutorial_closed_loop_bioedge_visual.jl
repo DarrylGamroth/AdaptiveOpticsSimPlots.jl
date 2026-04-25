@@ -1,7 +1,7 @@
 include(joinpath(@__DIR__, "common.jl"))
 
 result = run_closed_loop_example(
-    (tel, n_subap) -> BioEdgeWFS(tel; n_subap=n_subap, mode=Diffractive(), diffraction_padding=2);
+    (tel, pupil_samples) -> BioEdgeWFS(tel; pupil_samples=pupil_samples, mode=Diffractive(), diffraction_padding=2);
     n_iter=8,
 )
 

@@ -13,7 +13,7 @@ function run_two_stage_atmosphere_change()
         wind_direction=[10.0],
         altitude=[0.0],
         n_act=4,
-        n_subap=4,
+        n_lenslets=4,
     )
     dm_coarse = DeformableMirror(sim.tel; n_act=2, influence_width=0.6)
     dm_fine = sim.optic

@@ -8,13 +8,12 @@ compute_zernike!(zb, tel)
 @. tel.state.opd = 3e-8 * zb.modes[:, :, 4] + 2e-8 * zb.modes[:, :, 5]
 
 # These choices target realistic detector-frame sizes for the visual comparison.
-# `n_subap` remains the optical/control sampling knob and is therefore selected
-# per WFS family rather than forced to be identical across sensor geometries.
-pyramid = PyramidWFS(tel; n_subap=32, mode=Diffractive(), modulation=1.0, diffraction_padding=2)
-bioedge = BioEdgeWFS(tel; n_subap=16, mode=Diffractive(), modulation=1.0, diffraction_padding=2)
-zernike = ZernikeWFS(tel; n_subap=64, diffraction_padding=2)
-curvature = CurvatureWFS(tel; n_subap=8, diffraction_padding=2, readout_pixels_per_subap=8)
-shack_hartmann = ShackHartmann(tel; n_subap=16, mode=Diffractive(), pixel_scale=0.06, n_pix_subap=8)
+# `n_lenslets` is specific to SH-WFS; pupil-plane sensors use `pupil_samples`.
+pyramid = PyramidWFS(tel; pupil_samples=32, mode=Diffractive(), modulation=1.0, diffraction_padding=2)
+bioedge = BioEdgeWFS(tel; pupil_samples=16, mode=Diffractive(), modulation=1.0, diffraction_padding=2)
+zernike = ZernikeWFS(tel; pupil_samples=64, diffraction_padding=2)
+curvature = CurvatureWFS(tel; pupil_samples=8, diffraction_padding=2, readout_pixels_per_sample=8)
+shack_hartmann = ShackHartmann(tel; n_lenslets=8, mode=Diffractive(), pixel_scale=0.06, n_pix_subap=16)
 
 measure!(pyramid, tel, src)
 measure!(bioedge, tel, src)

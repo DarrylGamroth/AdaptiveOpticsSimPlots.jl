@@ -7,14 +7,14 @@ zb = ZernikeBasis(tel, 4)
 compute_zernike!(zb, tel)
 @. tel.state.opd = 3e-8 * zb.modes[:, :, 4]
 
-sh = ShackHartmann(tel; n_subap=6, mode=Diffractive(), pixel_scale=0.06, n_pix_subap=8)
+sh = ShackHartmann(tel; n_lenslets=6, mode=Diffractive(), pixel_scale=0.06, n_pix_subap=8)
 prepare_runtime_wfs!(sh, tel, src)
 slopes_data = copy(measure!(sh, tel, src))
 detector_image = shack_hartmann_detector_image(sh)
 
 layout = subaperture_layout(sh)
 valid = valid_subaperture_indices(layout)
-valid_linear = LinearIndices((sh.params.n_subap, sh.params.n_subap))[valid]
+valid_linear = LinearIndices((sh.params.n_lenslets, sh.params.n_lenslets))[valid]
 
 display(Plots.plot(
     aoplot(detector_image, DetectorFrame(); title="SH Detector Mosaic"),

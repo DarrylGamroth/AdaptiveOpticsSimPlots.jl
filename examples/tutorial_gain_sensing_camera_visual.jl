@@ -27,7 +27,7 @@ end
 
 tel = base_telescope(resolution=24, central_obstruction=0.0)
 src = base_source(band=:R, magnitude=8.0)
-wfs = PyramidWFS(tel; n_subap=4, mode=Diffractive(), threshold=0.5, modulation=3.0,
+wfs = PyramidWFS(tel; pupil_samples=4, mode=Diffractive(), threshold=0.5, modulation=3.0,
     normalization=IncidenceFluxNormalization(),
     modulation_points=8, diffraction_padding=2, n_pix_separation=2, n_pix_edge=1)
 basis = cartesian_basis(tel, 4)

@@ -4,7 +4,7 @@ tel = base_telescope(resolution=24, central_obstruction=0.0)
 src = Source(band=:I, magnitude=0.0)
 atm = KolmogorovAtmosphere(tel; r0=0.2, L0=25.0)
 dm = DeformableMirror(tel; n_act=4, influence_width=0.3)
-wfs = PyramidWFS(tel; n_subap=4, mode=Diffractive(), modulation=1.0)
+wfs = PyramidWFS(tel; pupil_samples=4, mode=Diffractive(), modulation=1.0)
 sim = AOSimulation(tel, src, atm, dm, wfs)
 
 branch = RuntimeBranch(

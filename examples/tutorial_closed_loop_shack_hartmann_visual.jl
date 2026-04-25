@@ -1,7 +1,7 @@
 include(joinpath(@__DIR__, "common.jl"))
 
 result = run_closed_loop_example(
-    (tel, n_subap) -> ShackHartmann(tel; n_subap=n_subap, mode=Diffractive(), pixel_scale=0.1, n_pix_subap=6);
+    (tel, n_lenslets) -> ShackHartmann(tel; n_lenslets=n_lenslets, mode=Diffractive(), pixel_scale=0.1, n_pix_subap=6);
     n_iter=8,
 )
 

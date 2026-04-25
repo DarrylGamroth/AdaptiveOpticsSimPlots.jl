@@ -40,10 +40,10 @@ end
 _wfs_frame_figure(frame::AbstractMatrix; title::AbstractString="WFS Frame", kwargs...) =
     _heatmap2d(_plot_matrix_data(frame); title=title, kwargs...)
 
-function _shack_hartmann_detector_frame_figure(spot_cube::AbstractArray, n_subap::Integer;
+function _shack_hartmann_detector_frame_figure(spot_cube::AbstractArray, n_lenslets::Integer;
     stretch::Symbol=:linear, title::AbstractString="Shack-Hartmann Detector Frame",
     gap::Integer=0, gap_value=0, kwargs...)
-    frame = AdaptiveOpticsSim.shack_hartmann_detector_image(spot_cube, n_subap; gap=gap, gap_value=gap_value)
+    frame = AdaptiveOpticsSim.shack_hartmann_detector_image(spot_cube, n_lenslets; gap=gap, gap_value=gap_value)
     data = _apply_image_stretch(_plot_matrix_data(frame), stretch)
     return _heatmap2d(data; title=title, kwargs...)
 end

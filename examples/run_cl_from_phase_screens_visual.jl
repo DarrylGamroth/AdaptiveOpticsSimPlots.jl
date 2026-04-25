@@ -12,7 +12,7 @@ sim = AdaptiveOpticsSim.initialize_ao_shwfs(
     wind_direction=[45.0],
     altitude=[0.0],
     n_act=4,
-    n_subap=4,
+    n_lenslets=4,
 )
 screens = Vector{Matrix{Float64}}(undef, 5)
 for k in 1:5
