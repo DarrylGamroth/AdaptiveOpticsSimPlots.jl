@@ -21,7 +21,6 @@ dispatchable selector types:
 - `ScienceFrame`
 - `DetectorFrame`
 - `WFSFrame`
-- `ShackHartmannDetectorFrame`
 - `Commands`
 - `Signal`
 - `RuntimeTimeseries`
@@ -36,7 +35,6 @@ aoplot(psf, PSF())
 aoplot(detector, DetectorFrame())
 aoplot(wfs, DetectorFrame())
 aoplot(wfs, WFSFrame())
-aoplot(shack_hartmann, ShackHartmannDetectorFrame())
 aoplot(dm, Commands())
 aoplot(dm, OPD())
 aoplot(runtime, ScienceFrame())
@@ -125,8 +123,8 @@ The OOPAO-style tutorial examples are:
 The plotted closed-loop helper examples are:
 
 - `examples/closed_loop_demo_visual.jl`
-- `examples/platform_single_runtime_visual.jl`
-- `examples/platform_grouped_runtime_visual.jl`
+- `examples/control_loop_single_runtime_visual.jl`
+- `examples/control_loop_grouped_runtime_visual.jl`
 - `examples/run_cl_visual.jl`
 - `examples/run_cl_first_stage_visual.jl`
 - `examples/run_cl_from_phase_screens_visual.jl`

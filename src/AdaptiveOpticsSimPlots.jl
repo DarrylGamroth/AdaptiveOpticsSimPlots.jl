@@ -5,7 +5,7 @@ using Plots
 
 export aoplot
 export Pupil, OPD, PSF, ScienceFrame, DetectorFrame, WFSFrame
-export ShackHartmannDetectorFrame, Commands, Signal, RuntimeTimeseries
+export Commands, Signal, RuntimeTimeseries
 export shack_hartmann_detector_image
 
 include("selectors.jl")

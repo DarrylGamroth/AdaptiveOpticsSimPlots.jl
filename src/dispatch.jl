@@ -32,11 +32,9 @@ aoplot(wfs::AdaptiveOpticsSim.AbstractWFS, ::DetectorFrame; kwargs...) = _wfs_de
 aoplot(wfs::AdaptiveOpticsSim.AbstractWFS, ::Signal; kwargs...) =
     _signal_trace_figure(AdaptiveOpticsSim.slopes(wfs); title="WFS Signal", kwargs...)
 
-aoplot(wfs::AdaptiveOpticsSim.ShackHartmann, ::WFSFrame; kwargs...) =
+aoplot(wfs::AdaptiveOpticsSim.ShackHartmannWFS, ::WFSFrame; kwargs...) =
     _shack_hartmann_detector_frame_figure(wfs; kwargs...)
-aoplot(wfs::AdaptiveOpticsSim.ShackHartmann, ::DetectorFrame; kwargs...) =
-    _shack_hartmann_detector_frame_figure(wfs; kwargs...)
-aoplot(wfs::AdaptiveOpticsSim.ShackHartmann, ::ShackHartmannDetectorFrame; kwargs...) =
+aoplot(wfs::AdaptiveOpticsSim.ShackHartmannWFS, ::DetectorFrame; kwargs...) =
     _shack_hartmann_detector_frame_figure(wfs; kwargs...)
 
 aoplot(dm::AdaptiveOpticsSim.AbstractDeformableMirror, ::Commands; kwargs...) = _dm_commands_figure(dm; kwargs...)

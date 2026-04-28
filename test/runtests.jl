@@ -35,7 +35,7 @@ end
     measure!(zwfs, tel, src)
     curv = CurvatureWFS(tel; pupil_samples=4)
     measure!(curv, tel, src)
-    sh = ShackHartmann(tel; n_lenslets=4, mode=Diffractive(), pixel_scale=0.1, n_pix_subap=6)
+    sh = ShackHartmannWFS(tel; n_lenslets=4, mode=Diffractive(), pixel_scale=0.1, n_pix_subap=6)
     prepare_runtime_wfs!(sh, tel, src)
     measure!(sh, tel, src)
 
@@ -49,7 +49,7 @@ end
     plt_bio_detector = aoplot(bio, DetectorFrame())
     plt_zwfs_detector = aoplot(zwfs, DetectorFrame())
     plt_curv_detector = aoplot(curv, DetectorFrame())
-    plt_sh_detector = aoplot(sh, ShackHartmannDetectorFrame())
+    plt_sh_detector = aoplot(sh, DetectorFrame())
     plt_dm = aoplot(dm, Commands())
     plt_dm_opd = aoplot(dm, OPD())
     plt_signal = aoplot(collect(1.0:8.0), Signal())
@@ -83,7 +83,7 @@ end
     @test aoplot(curv, DetectorFrame()) isa Plots.Plot
     @test aoplot(pyr, Signal()) isa Plots.Plot
     @test aoplot(sh, DetectorFrame()) isa Plots.Plot
-    @test aoplot(sh, ShackHartmannDetectorFrame()) isa Plots.Plot
+    @test aoplot(sh, DetectorFrame()) isa Plots.Plot
     @test aoplot(sh, Signal()) isa Plots.Plot
     @test aoplot(dm, Commands()) isa Plots.Plot
     @test aoplot(dm, OPD()) isa Plots.Plot
@@ -99,19 +99,19 @@ end
 
     atm = KolmogorovAtmosphere(tel; r0=0.2, L0=25.0)
     runtime_sim = AOSimulation(tel, src, atm, dm, pyr)
-    runtime_branch = RuntimeBranch(
+    runtime_branch = ControlLoopBranch(
         :main,
         runtime_sim,
         NullReconstructor();
         wfs_detector=Detector(integration_time=1.0, noise=NoiseNone(), qe=1.0, binning=1),
         science_detector=Detector(integration_time=1.0, noise=NoiseNone(), qe=1.0, binning=1),
     )
-    runtime_cfg = SingleRuntimeConfig(products=RuntimeProductRequirements(
+    runtime_cfg = SingleControlLoopConfig(outputs=RuntimeOutputRequirements(
         slopes=true,
         wfs_pixels=true,
         science_pixels=true,
     ))
-    runtime_scenario = build_runtime_scenario(runtime_cfg, runtime_branch)
+    runtime_scenario = build_control_loop_scenario(runtime_cfg, runtime_branch)
     prepare!(runtime_scenario)
     @test aoplot(runtime_scenario, WFSFrame()) isa Plots.Plot
     @test aoplot(runtime_scenario, ScienceFrame()) isa Plots.Plot

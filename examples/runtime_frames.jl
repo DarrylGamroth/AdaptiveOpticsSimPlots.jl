@@ -7,19 +7,19 @@ dm = DeformableMirror(tel; n_act=4, influence_width=0.3)
 wfs = PyramidWFS(tel; pupil_samples=4, mode=Diffractive(), modulation=1.0)
 sim = AOSimulation(tel, src, atm, dm, wfs)
 
-branch = RuntimeBranch(
+branch = ControlLoopBranch(
     :main,
     sim,
     NullReconstructor();
     wfs_detector=Detector(integration_time=1.0, noise=NoiseNone(), qe=1.0, binning=1),
     science_detector=Detector(integration_time=1.0, noise=NoiseNone(), qe=1.0, binning=1),
 )
-cfg = SingleRuntimeConfig(products=RuntimeProductRequirements(
+cfg = SingleControlLoopConfig(outputs=RuntimeOutputRequirements(
     slopes=true,
     wfs_pixels=true,
     science_pixels=true,
 ))
-scenario = build_runtime_scenario(cfg, branch)
+scenario = build_control_loop_scenario(cfg, branch)
 prepare!(scenario)
 
 display(Plots.plot(

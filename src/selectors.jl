@@ -48,14 +48,6 @@ tiled detector-like subaperture mosaic.
 struct WFSFrame <: AbstractAOPlot end
 
 """
-    ShackHartmannDetectorFrame()
-
-Select the explicit Shack-Hartmann detector mosaic view, exposing the lenslet
-spot cube as a single tiled image.
-"""
-struct ShackHartmannDetectorFrame <: AbstractAOPlot end
-
-"""
     Commands()
 
 Select command/actuator values for deformable mirrors and compatible

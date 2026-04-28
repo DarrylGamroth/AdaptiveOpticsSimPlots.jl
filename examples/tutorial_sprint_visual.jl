@@ -2,7 +2,7 @@ include(joinpath(@__DIR__, "common.jl"))
 
 tel = base_telescope(resolution=16, central_obstruction=0.0)
 dm = DeformableMirror(tel; n_act=3, influence_width=0.35)
-wfs = ShackHartmann(tel; n_lenslets=2, mode=Geometric())
+wfs = ShackHartmannWFS(tel; n_lenslets=2, mode=Geometric())
 basis = modal_basis(dm, tel; n_modes=3).M2C
 sprint = AdaptiveOpticsSim.SPRINT(tel, dm, wfs, basis; n_mis_reg=2, field_order=[:shift_x, :shift_y],
     save_sensitivity=false)

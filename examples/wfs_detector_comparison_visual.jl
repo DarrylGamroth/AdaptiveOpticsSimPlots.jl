@@ -13,7 +13,7 @@ pyramid = PyramidWFS(tel; pupil_samples=32, mode=Diffractive(), modulation=1.0, 
 bioedge = BioEdgeWFS(tel; pupil_samples=16, mode=Diffractive(), modulation=1.0, diffraction_padding=2)
 zernike = ZernikeWFS(tel; pupil_samples=64, diffraction_padding=2)
 curvature = CurvatureWFS(tel; pupil_samples=8, diffraction_padding=2, readout_pixels_per_sample=8)
-shack_hartmann = ShackHartmann(tel; n_lenslets=8, mode=Diffractive(), pixel_scale=0.06, n_pix_subap=16)
+shack_hartmann = ShackHartmannWFS(tel; n_lenslets=8, mode=Diffractive(), pixel_scale=0.06, n_pix_subap=16)
 
 measure!(pyramid, tel, src)
 measure!(bioedge, tel, src)
