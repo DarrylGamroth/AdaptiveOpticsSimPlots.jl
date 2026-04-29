@@ -2,6 +2,8 @@
 
 Optional plotting companion package for `AdaptiveOpticsSim.jl`.
 
+Requires Julia 1.12 or newer, matching the core package.
+
 This package keeps plotting out of the simulation core and provides a small,
 maintained `Plots.jl` surface built on top of stable `AdaptiveOpticsSim`
 accessors.

@@ -10,16 +10,30 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        julia-version: ['1.11']
+        julia-version: ['1.12']
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout AdaptiveOpticsSimPlots
+        uses: actions/checkout@v4
+        with:
+          path: AdaptiveOpticsSimPlots.jl
+
+      - name: Checkout AdaptiveOpticsSim
+        uses: actions/checkout@v4
+        with:
+          repository: DarrylGamroth/AdaptiveOpticsSim.jl
+          path: AdaptiveOpticsSim.jl
+
       - uses: julia-actions/setup-julia@v2
         with:
           version: ${{ matrix.julia-version }}
+
       - name: Develop sibling AdaptiveOpticsSim
+        working-directory: AdaptiveOpticsSimPlots.jl
         run: |
-          julia --startup-file=no -e 'using Pkg; Pkg.develop(path="../AdaptiveOpticsSim.jl"); Pkg.instantiate()'
+          julia --startup-file=no --project=. -e 'using Pkg; Pkg.develop(path="../AdaptiveOpticsSim.jl"); Pkg.instantiate()'
+
       - name: Run tests
+        working-directory: AdaptiveOpticsSimPlots.jl
         env:
           GKSwstype: "100"
         run: julia --startup-file=no --project=. -e 'using Pkg; Pkg.test()'
