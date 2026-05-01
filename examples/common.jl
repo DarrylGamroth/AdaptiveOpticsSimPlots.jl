@@ -37,6 +37,59 @@ function base_atmosphere(tel::Telescope; r0::Real=0.15, L0::Real=25.0)
     )
 end
 
+function closed_loop_atmosphere(tel::Telescope; r0::Real=0.2, L0::Real=25.0,
+    fractional_cn2=[1.0], wind_speed=[5.0], wind_direction=[0.0], altitude=[0.0])
+    return MultiLayerAtmosphere(
+        tel;
+        r0=r0,
+        L0=L0,
+        fractional_cn2=fractional_cn2,
+        wind_speed=wind_speed,
+        wind_direction=wind_direction,
+        altitude=altitude,
+    )
+end
+
+function shack_hartmann_simulation(; resolution::Int=32, diameter::Real=8.0,
+    sampling_time::Real=1e-3, r0::Real=0.2, L0::Real=25.0,
+    fractional_cn2=[1.0], wind_speed=[5.0], wind_direction=[0.0],
+    altitude=[0.0], n_act::Int=4, n_lenslets::Int=4)
+    tel = Telescope(resolution=resolution, diameter=diameter, sampling_time=sampling_time)
+    src = Source()
+    atm = closed_loop_atmosphere(
+        tel;
+        r0=r0,
+        L0=L0,
+        fractional_cn2=fractional_cn2,
+        wind_speed=wind_speed,
+        wind_direction=wind_direction,
+        altitude=altitude,
+    )
+    dm = DeformableMirror(tel; n_act=n_act, influence_width=0.2)
+    wfs = ShackHartmannWFS(tel; n_lenslets=n_lenslets)
+    return AOSimulation(tel, src, atm, dm, wfs)
+end
+
+function pyramid_simulation(; resolution::Int=32, diameter::Real=8.0,
+    sampling_time::Real=1e-3, r0::Real=0.2, L0::Real=25.0,
+    fractional_cn2=[1.0], wind_speed=[5.0], wind_direction=[0.0],
+    altitude=[0.0], n_act::Int=4, pupil_samples::Int=4, modulation::Real=1.0)
+    tel = Telescope(resolution=resolution, diameter=diameter, sampling_time=sampling_time)
+    src = Source()
+    atm = closed_loop_atmosphere(
+        tel;
+        r0=r0,
+        L0=L0,
+        fractional_cn2=fractional_cn2,
+        wind_speed=wind_speed,
+        wind_direction=wind_direction,
+        altitude=altitude,
+    )
+    dm = DeformableMirror(tel; n_act=n_act, influence_width=0.2)
+    wfs = PyramidWFS(tel; pupil_samples=pupil_samples, modulation=modulation)
+    return AOSimulation(tel, src, atm, dm, wfs)
+end
+
 function apply_demo_ramp!(tel::Telescope; scale_x::Real=0.0, scale_y::Real=0.0, bias::Real=0.0)
     @inbounds for j in axes(tel.state.opd, 2), i in axes(tel.state.opd, 1)
         tel.state.opd[i, j] = bias + scale_x * (i - 1) + scale_y * (j - 1)

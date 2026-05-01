@@ -5,7 +5,7 @@ dm = DeformableMirror(tel; n_act=6, influence_width=0.3)
 dm.state.coefs .= range(-0.1, 0.1; length=length(dm.state.coefs))
 apply_opd!(dm, tel)
 
-sampled_topology = SampledActuatorTopology(actuator_coordinates(dm)[:, 1:4];
+sampled_topology = SampledActuatorTopology(AdaptiveOpticsSim.actuator_coordinates(dm)[:, 1:4];
     metadata=(manufacturer=:example,))
 measured_modes = Array(dm.state.modes[:, 1:4])
 sampled_dm = DeformableMirror(tel; topology=sampled_topology,

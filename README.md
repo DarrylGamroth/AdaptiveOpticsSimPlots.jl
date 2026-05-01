@@ -93,6 +93,12 @@ Run any example from the package root with:
 julia --project=. examples/image_formation_visual.jl
 ```
 
+Run the maintained visual example set with:
+
+```bash
+GKSwstype=100 ./scripts/run_visual_examples.sh
+```
+
 The quick visual examples are:
 
 - `examples/image_formation_visual.jl`: telescope pupil, OPD, and PSF.

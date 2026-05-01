@@ -1,7 +1,7 @@
 include(joinpath(@__DIR__, "common.jl"))
 
 rng = MersenneTwister(0)
-sim = AdaptiveOpticsSim.initialize_ao_shack_hartmann(
+sim = shack_hartmann_simulation(
     resolution=32,
     diameter=8.0,
     sampling_time=1e-3,

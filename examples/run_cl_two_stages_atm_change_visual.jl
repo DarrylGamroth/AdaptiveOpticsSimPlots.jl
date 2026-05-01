@@ -2,7 +2,7 @@ include(joinpath(@__DIR__, "common.jl"))
 
 function run_two_stage_atmosphere_change()
     rng = MersenneTwister(6)
-    sim = AdaptiveOpticsSim.initialize_ao_shack_hartmann(
+    sim = shack_hartmann_simulation(
         resolution=32,
         diameter=8.0,
         sampling_time=1e-3,

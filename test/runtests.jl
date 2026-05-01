@@ -89,7 +89,7 @@ end
     @test aoplot(dm, OPD()) isa Plots.Plot
     @test aoplot(collect(1.0:4.0), Signal()) isa Plots.Plot
 
-    sampled_topology = SampledActuatorTopology(actuator_coordinates(dm)[:, 1:4];
+    sampled_topology = SampledActuatorTopology(AdaptiveOpticsSim.actuator_coordinates(dm)[:, 1:4];
         metadata=(manufacturer=:alpao,))
     measured_modes = Array(dm.state.modes[:, 1:4])
     sampled_dm = DeformableMirror(tel; topology=sampled_topology,
