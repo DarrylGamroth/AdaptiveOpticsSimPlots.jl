@@ -13,17 +13,17 @@ jobs:
         julia-version: ['1.12']
     steps:
       - name: Checkout AdaptiveOpticsSimPlots
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           path: AdaptiveOpticsSimPlots.jl
 
       - name: Checkout AdaptiveOpticsSim
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           repository: DarrylGamroth/AdaptiveOpticsSim.jl
           path: AdaptiveOpticsSim.jl
 
-      - uses: julia-actions/setup-julia@v2
+      - uses: julia-actions/setup-julia@v3
         with:
           version: ${{ matrix.julia-version }}
 
